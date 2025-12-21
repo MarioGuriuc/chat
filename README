@@ -17,14 +17,14 @@ A mysterious discussion board for sharing and analyzing conspiracy theories. Bui
 ## 🏗️ Tech Stack
 
 ### Frontend
-- React 18 with TypeScript
+- React 19 with TypeScript
 - Tailwind CSS for styling
 - Apollo Client for GraphQL
 - Responsive design with mysterious theme
 
 ### Backend
 - Java 17
-- Spring Boot 3.2.0
+- Spring Boot 3.4.1
 - Spring GraphQL
 - PostgreSQL database
 - JPA/Hibernate

@@ -25,10 +25,9 @@ public class MutationResolver {
     @MutationMapping
     public AuthPayload login(
         @Argument String username,
-        @Argument String secretCode,
-        @Argument Boolean anonymous
+        @Argument String secretCode
     ) {
-        return userService.login(username, secretCode, anonymous);
+        return userService.login(username, secretCode);
     }
     
     @MutationMapping

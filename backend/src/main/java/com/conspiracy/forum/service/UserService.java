@@ -4,29 +4,32 @@ import com.conspiracy.forum.dto.AuthPayload;
 import com.conspiracy.forum.model.User;
 import com.conspiracy.forum.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     
     @Transactional
-    public AuthPayload login(String username, String secretCode, Boolean anonymous) {
+    public AuthPayload login(String username, String secretCode) {
         Optional<User> userOpt = userRepository.findByUsername(username);
         
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            if (!user.getSecretCode().equals(secretCode)) {
-                throw new RuntimeException("Invalid secret code");
+            if (!passwordEncoder.matches(secretCode, user.getSecretCode())) {
+                throw new RuntimeException("Invalid username or secret code");
             }
             String token = generateToken(user);
             return new AuthPayload(user, token);
         } else {
-            throw new RuntimeException("User not found");
+            throw new RuntimeException("Invalid username or secret code");
         }
     }
     
@@ -42,7 +45,7 @@ public class UserService {
         
         User user = new User();
         user.setUsername(username);
-        user.setSecretCode(secretCode);
+        user.setSecretCode(passwordEncoder.encode(secretCode));
         user.setIsAnonymous(anonymous != null ? anonymous : false);
         
         User savedUser = userRepository.save(user);
@@ -60,7 +63,11 @@ public class UserService {
     }
     
     private String generateToken(User user) {
-        return UUID.randomUUID().toString() + "-" + user.getId();
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] tokenBytes = new byte[32];
+        secureRandom.nextBytes(tokenBytes);
+        String randomToken = Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
+        return randomToken + "-" + user.getId();
     }
     
     public Long extractUserIdFromToken(String token) {

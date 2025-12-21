@@ -48,6 +48,13 @@ cd ..
 echo "⏳ Waiting for backend to start..."
 sleep 15
 
+# Check if backend is still running
+if ! kill -0 $BACKEND_PID 2>/dev/null; then
+    echo "⚠️  Backend failed to start. Please check the logs."
+    docker-compose down
+    exit 1
+fi
+
 # Start frontend
 echo ""
 echo "🌐 Starting frontend..."

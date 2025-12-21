@@ -9,7 +9,7 @@ type Query {
 }
 
 type Mutation {
-    login(username: String!, secretCode: String!, anonymous: Boolean = false): AuthPayload!
+    login(username: String!, secretCode: String!): AuthPayload!
     register(username: String!, secretCode: String!, anonymous: Boolean = false): AuthPayload!
     
     createTheory(input: TheoryInput!): Theory!
