@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at 20% 20%, rgba(91, 192, 190, 0.1), transparent 25%),
+    radial-gradient(circle at 80% 0%, rgba(58, 80, 107, 0.25), transparent 35%),
+    #0b132b;
+  min-height: 100vh;
+}
+
+.glow-card {
+  background: linear-gradient(145deg, rgba(28, 37, 65, 0.9), rgba(11, 19, 43, 0.95));
+  border: 1px solid rgba(91, 192, 190, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.tag {
+  border: 1px solid rgba(91, 192, 190, 0.35);
+  background-color: rgba(91, 192, 190, 0.1);
+  color: #5bc0be;
+}

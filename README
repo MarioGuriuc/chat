@@ -1,1 +1,24 @@
+# Conspiracy Theory Forum
 
+Mystery-first discussion board featuring a React + TypeScript + Tailwind frontend and a Spring Boot GraphQL backend.
+
+## Backend
+- Location: `backend/`
+- Framework: Spring Boot (Java 21) + Spring GraphQL
+- Start: `mvn spring-boot:run`
+- GraphiQL console: `http://localhost:8080/graphiql` (path `/graphql`)
+
+## Frontend
+- Location: `frontend/`
+- Framework: React + Vite + Apollo Client + Tailwind
+- Start: `npm run dev` (defaults to `http://localhost:5173`)
+- Set `VITE_GRAPHQL_URL` to point at the backend GraphQL endpoint when not using the default `http://localhost:8080/graphql`.
+
+## Features
+- Paginated theory feed with status / keyword filters and hot-sorting by comment activity.
+- Login via shared "secret code" to post or comment (anonymous option included).
+- Theory creation supports evidence URLs and status tagging.
+- Detailed side panel shows comments and allows new posts once logged in.
+
+## Notes
+Package downloads from remote registries may require network access. If installs fail, configure registry/proxy access as needed.

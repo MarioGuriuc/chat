@@ -1,0 +1,95 @@
+scalar DateTime
+
+enum Status {
+    UNVERIFIED
+    DEBUNKED
+    CONFIRMED
+}
+
+type User {
+    id: ID!
+    username: String!
+}
+
+type Theory {
+    id: ID!
+    title: String!
+    content: String!
+    status: Status!
+    author: User!
+    postedAt: DateTime!
+    evidenceUrls: [String!]!
+    comments: [Comment!]!
+    anonymous: Boolean!
+    commentCount: Int!
+    displayAuthor: String!
+}
+
+type Comment {
+    id: ID!
+    theoryId: ID!
+    content: String!
+    postedAt: DateTime!
+    author: User!
+    anonymous: Boolean!
+    displayAuthor: String!
+}
+
+type TheoryPage {
+    content: [Theory!]!
+    totalElements: Int!
+    totalPages: Int!
+    page: Int!
+    size: Int!
+}
+
+type AuthPayload {
+    token: String!
+    user: User!
+}
+
+type Query {
+    theories(page: Int, size: Int, status: Status, keyword: String, hot: Boolean): TheoryPage!
+    theory(id: ID!): Theory
+    userTheories(userId: ID!): [Theory!]!
+}
+
+input TheoryInput {
+    title: String!
+    content: String!
+    status: Status
+    userId: ID!
+    evidenceUrls: [String!]
+    anonymous: Boolean
+}
+
+input TheoryUpdateInput {
+    id: ID!
+    title: String
+    content: String
+    status: Status
+    evidenceUrls: [String!]
+    anonymous: Boolean
+}
+
+input CommentInput {
+    theoryId: ID!
+    content: String!
+    userId: ID!
+    anonymous: Boolean
+}
+
+input CommentUpdateInput {
+    id: ID!
+    content: String!
+}
+
+type Mutation {
+    login(username: String!, secretCode: String!): AuthPayload!
+    addTheory(input: TheoryInput!): Theory!
+    updateTheory(input: TheoryUpdateInput!): Theory!
+    deleteTheory(id: ID!): Boolean!
+    addComment(input: CommentInput!): Comment!
+    updateComment(input: CommentUpdateInput!): Comment!
+    deleteComment(id: ID!): Boolean!
+}
