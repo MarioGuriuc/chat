@@ -1,1 +1,166 @@
+# 🛸 Conspiracy Theory Forum 👁️
 
+A mysterious discussion board for sharing and analyzing conspiracy theories. Built with React, TypeScript, Tailwind CSS, Spring Boot, GraphQL, and PostgreSQL.
+
+## 🎯 Features
+
+- **User Authentication**: Login/Register with secret code validation
+- **Anonymous Posting**: Option to post anonymously
+- **Theory Management**: Create, view, update, and delete conspiracy theories
+- **Comments**: Discuss theories with the community
+- **Status Tracking**: Theories can be UNVERIFIED, CONFIRMED, or DEBUNKED
+- **Evidence Links**: Attach evidence URLs to theories
+- **Filtering**: Filter theories by status or search by keyword
+- **Hot Theories**: View theories with the most comments
+- **Pagination**: Browse through theories efficiently
+
+## 🏗️ Tech Stack
+
+### Frontend
+- React 18 with TypeScript
+- Tailwind CSS for styling
+- Apollo Client for GraphQL
+- Responsive design with mysterious theme
+
+### Backend
+- Java 17
+- Spring Boot 3.2.0
+- Spring GraphQL
+- PostgreSQL database
+- JPA/Hibernate
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Java 17 or higher
+- Node.js 16 or higher
+- Maven
+- Docker (optional, for PostgreSQL)
+
+### Setup PostgreSQL
+
+#### Option 1: Using Docker Compose (Recommended)
+```bash
+docker-compose up -d
+```
+
+#### Option 2: Local PostgreSQL
+Install PostgreSQL and create a database:
+```sql
+CREATE DATABASE conspiracy_forum;
+```
+
+Update `backend/src/main/resources/application.properties` with your database credentials if needed.
+
+### Backend Setup
+
+1. Navigate to the backend directory:
+```bash
+cd backend
+```
+
+2. Build the project:
+```bash
+mvn clean install
+```
+
+3. Run the application:
+```bash
+mvn spring-boot:run
+```
+
+The backend will start at `http://localhost:8080`
+GraphiQL interface available at `http://localhost:8080/graphiql`
+
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm start
+```
+
+The frontend will start at `http://localhost:3000`
+
+## 📖 Usage
+
+1. **Register/Login**: Create an account with a username and secret code (min 6 characters)
+2. **Browse Theories**: View all conspiracy theories on the main page
+3. **Filter**: Use status filters (UNVERIFIED, CONFIRMED, DEBUNKED) or search by keyword
+4. **Create Theory**: Click "[+ NEW THEORY]" to submit your conspiracy theory
+5. **View Details**: Click on any theory to see full details and comments
+6. **Comment**: Add your analysis to theories
+7. **Hot Theories**: Click the "🔥 [HOT]" button to see most discussed theories
+
+## 🎨 Theme
+
+The application features a mysterious, terminal-style interface with:
+- Matrix-inspired green text on dark background
+- Conspiracy-themed color scheme
+- Hidden menus and classified aesthetics
+- Monospace fonts for that hacker feel
+
+## 📝 GraphQL API
+
+### Queries
+- `theories(page, size, status, keyword, hot)`: Get paginated list of theories
+- `theory(id)`: Get theory by ID with comments
+- `user(id)`: Get user details
+- `userTheories(userId)`: Get theories by user
+- `me`: Get current authenticated user
+
+### Mutations
+- `login(username, secretCode, anonymous)`: User login
+- `register(username, secretCode, anonymous)`: User registration
+- `createTheory(input)`: Create new theory
+- `updateTheory(id, input)`: Update theory
+- `deleteTheory(id)`: Delete theory
+- `createComment(input)`: Add comment to theory
+- `updateComment(id, content)`: Update comment
+- `deleteComment(id)`: Delete comment
+
+## 🔒 Security Notes
+
+- Secret codes are stored in the database (in production, use proper password hashing)
+- Authentication tokens are stored in localStorage
+- CORS is configured for local development
+
+## 🛠️ Development
+
+### Backend Structure
+```
+backend/src/main/java/com/conspiracy/forum/
+├── model/          # Entity models
+├── repository/     # JPA repositories
+├── service/        # Business logic
+├── resolver/       # GraphQL resolvers
+├── dto/            # Data transfer objects
+└── config/         # Configuration classes
+```
+
+### Frontend Structure
+```
+frontend/src/
+├── components/     # React components
+├── graphql/        # GraphQL client and operations
+├── types/          # TypeScript type definitions
+└── utils/          # Utility functions
+```
+
+## 📄 License
+
+This project is for educational purposes.
+
+---
+
+**🔺 REMEMBER: QUESTION EVERYTHING 🔺**
+**💀 "THE TRUTH IS OUT THERE" 💀**

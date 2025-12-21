@@ -1,0 +1,84 @@
+scalar DateTime
+
+type Query {
+    theories(page: Int = 0, size: Int = 10, status: TheoryStatus, keyword: String, hot: Boolean = false): TheoryPage!
+    theory(id: ID!): Theory
+    user(id: ID!): User
+    userTheories(userId: ID!): [Theory!]!
+    me: User
+}
+
+type Mutation {
+    login(username: String!, secretCode: String!, anonymous: Boolean = false): AuthPayload!
+    register(username: String!, secretCode: String!, anonymous: Boolean = false): AuthPayload!
+    
+    createTheory(input: TheoryInput!): Theory!
+    updateTheory(id: ID!, input: TheoryInput!): Theory!
+    deleteTheory(id: ID!): Boolean!
+    
+    createComment(input: CommentInput!): Comment!
+    updateComment(id: ID!, content: String!): Comment!
+    deleteComment(id: ID!): Boolean!
+}
+
+type Theory {
+    id: ID!
+    title: String!
+    content: String!
+    status: TheoryStatus!
+    evidenceUrls: [String!]!
+    author: User!
+    comments: [Comment!]!
+    commentCount: Int!
+    postedAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type Comment {
+    id: ID!
+    content: String!
+    theory: Theory!
+    author: User!
+    postedAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type User {
+    id: ID!
+    username: String!
+    isAnonymous: Boolean!
+    createdAt: DateTime!
+    theories: [Theory!]!
+    comments: [Comment!]!
+}
+
+type AuthPayload {
+    user: User!
+    token: String!
+}
+
+type TheoryPage {
+    content: [Theory!]!
+    totalElements: Int!
+    totalPages: Int!
+    currentPage: Int!
+    size: Int!
+}
+
+input TheoryInput {
+    title: String!
+    content: String!
+    status: TheoryStatus
+    evidenceUrls: [String!]
+}
+
+input CommentInput {
+    theoryId: ID!
+    content: String!
+}
+
+enum TheoryStatus {
+    UNVERIFIED
+    DEBUNKED
+    CONFIRMED
+}
