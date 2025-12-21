@@ -3,7 +3,9 @@ package com.conspiracy.forum.service;
 import com.conspiracy.forum.dto.AuthPayload;
 import com.conspiracy.forum.exception.UnauthorizedException;
 import com.conspiracy.forum.exception.ValidationException;
+import com.conspiracy.forum.model.Token;
 import com.conspiracy.forum.model.User;
+import com.conspiracy.forum.repository.TokenRepository;
 import com.conspiracy.forum.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private static final SecureRandom secureRandom = new SecureRandom();
     
@@ -68,17 +71,23 @@ public class UserService {
     private String generateToken(User user) {
         byte[] tokenBytes = new byte[32];
         secureRandom.nextBytes(tokenBytes);
-        String randomToken = Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
-        return randomToken + "-" + user.getId();
+        String tokenValue = Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
+        
+        Token token = new Token();
+        token.setToken(tokenValue);
+        token.setUser(user);
+        tokenRepository.save(token);
+        
+        return tokenValue;
     }
     
-    public Long extractUserIdFromToken(String token) {
-        if (token == null || !token.contains("-")) {
+    public Long extractUserIdFromToken(String tokenValue) {
+        if (tokenValue == null) {
             return null;
         }
         try {
-            String[] parts = token.split("-");
-            return Long.parseLong(parts[parts.length - 1]);
+            Optional<Token> tokenOpt = tokenRepository.findByToken(tokenValue);
+            return tokenOpt.map(token -> token.getUser().getId()).orElse(null);
         } catch (Exception e) {
             return null;
         }
