@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '../apollo-imports';
 import { CREATE_THEORY_MUTATION, GET_THEORIES_QUERY } from '../graphql/operations';
-import { TheoryStatus } from '../types';
+import { TheoryStatus, Theory, TheoryInput } from '../types';
 
 interface CreateTheoryProps {
   onBack: () => void;
   onSuccess: () => void;
+}
+
+interface CreateTheoryData {
+  createTheory: Theory;
+}
+
+interface CreateTheoryVariables {
+  input: TheoryInput;
 }
 
 const CreateTheory: React.FC<CreateTheoryProps> = ({ onBack, onSuccess }) => {
@@ -15,7 +23,7 @@ const CreateTheory: React.FC<CreateTheoryProps> = ({ onBack, onSuccess }) => {
   const [evidenceUrls, setEvidenceUrls] = useState<string[]>(['']);
   const [error, setError] = useState('');
 
-  const [createTheory, { loading }] = useMutation(CREATE_THEORY_MUTATION, {
+  const [createTheory, { loading }] = useMutation<CreateTheoryData, CreateTheoryVariables>(CREATE_THEORY_MUTATION, {
     onCompleted: () => {
       onSuccess();
     },

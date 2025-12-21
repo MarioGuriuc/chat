@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { ApolloProvider, useQuery } from '@apollo/client';
+import React, { useState } from 'react';
+import { ApolloProvider, useQuery } from './apollo-imports';
 import { client } from './graphql/client';
 import { isAuthenticated } from './utils/auth';
 import { GET_ME_QUERY } from './graphql/operations';
-import { Theory } from './types';
+import { Theory, User } from './types';
 import Header from './components/Header';
 import Login from './components/Login';
 import TheoryList from './components/TheoryList';
@@ -12,12 +12,16 @@ import CreateTheory from './components/CreateTheory';
 
 type View = 'list' | 'detail' | 'create';
 
+interface GetMeData {
+  me: User | null;
+}
+
 function MainApp() {
   const [isAuth, setIsAuth] = useState(isAuthenticated());
   const [currentView, setCurrentView] = useState<View>('list');
   const [selectedTheory, setSelectedTheory] = useState<Theory | null>(null);
 
-  const { data: userData } = useQuery(GET_ME_QUERY, {
+  const { data: userData } = useQuery<GetMeData>(GET_ME_QUERY, {
     skip: !isAuth,
   });
 

@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '../apollo-imports';
 import { GET_THEORIES_QUERY } from '../graphql/operations';
-import { Theory, TheoryStatus } from '../types';
+import { Theory, TheoryStatus, TheoryPage } from '../types';
 import TheoryCard from './TheoryCard';
 
 interface TheoryListProps {
   onSelectTheory: (theory: Theory) => void;
   onCreateTheory: () => void;
+}
+
+interface GetTheoriesData {
+  theories: TheoryPage;
+}
+
+interface GetTheoriesVariables {
+  page: number;
+  size: number;
+  status?: TheoryStatus;
+  keyword?: string;
+  hot?: boolean;
 }
 
 const TheoryList: React.FC<TheoryListProps> = ({ onSelectTheory, onCreateTheory }) => {
@@ -16,7 +28,7 @@ const TheoryList: React.FC<TheoryListProps> = ({ onSelectTheory, onCreateTheory 
   const [hot, setHot] = useState(false);
   const [searchInput, setSearchInput] = useState('');
 
-  const { loading, error, data, refetch } = useQuery(GET_THEORIES_QUERY, {
+  const { loading, error, data } = useQuery<GetTheoriesData, GetTheoriesVariables>(GET_THEORIES_QUERY, {
     variables: {
       page,
       size: 10,

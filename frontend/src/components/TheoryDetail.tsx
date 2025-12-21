@@ -1,22 +1,38 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '../apollo-imports';
 import { GET_THEORY_QUERY, CREATE_COMMENT_MUTATION, GET_THEORIES_QUERY } from '../graphql/operations';
-import { Theory, TheoryStatus } from '../types';
+import { Theory, TheoryStatus, Comment, CommentInput } from '../types';
 
 interface TheoryDetailProps {
   theoryId: string;
   onBack: () => void;
 }
 
+interface GetTheoryData {
+  theory: Theory | null;
+}
+
+interface GetTheoryVariables {
+  id: string;
+}
+
+interface CreateCommentData {
+  createComment: Comment;
+}
+
+interface CreateCommentVariables {
+  input: CommentInput;
+}
+
 const TheoryDetail: React.FC<TheoryDetailProps> = ({ theoryId, onBack }) => {
   const [commentContent, setCommentContent] = useState('');
   const [commentError, setCommentError] = useState('');
 
-  const { loading, error, data, refetch } = useQuery(GET_THEORY_QUERY, {
+  const { loading, error, data, refetch } = useQuery<GetTheoryData, GetTheoryVariables>(GET_THEORY_QUERY, {
     variables: { id: theoryId },
   });
 
-  const [createComment, { loading: commentLoading }] = useMutation(CREATE_COMMENT_MUTATION, {
+  const [createComment, { loading: commentLoading }] = useMutation<CreateCommentData, CreateCommentVariables>(CREATE_COMMENT_MUTATION, {
     onCompleted: () => {
       setCommentContent('');
       setCommentError('');

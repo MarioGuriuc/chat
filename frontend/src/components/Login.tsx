@@ -1,10 +1,25 @@
 import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '../apollo-imports';
 import { LOGIN_MUTATION, REGISTER_MUTATION } from '../graphql/operations';
 import { setToken } from '../utils/auth';
+import { AuthPayload } from '../types';
 
 interface LoginProps {
   onLoginSuccess: () => void;
+}
+
+interface LoginData {
+  login: AuthPayload;
+}
+
+interface RegisterData {
+  register: AuthPayload;
+}
+
+interface AuthVariables {
+  username: string;
+  secretCode: string;
+  anonymous?: boolean;
 }
 
 const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
@@ -14,7 +29,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [anonymous, setAnonymous] = useState(false);
   const [error, setError] = useState('');
 
-  const [login, { loading: loginLoading }] = useMutation(LOGIN_MUTATION, {
+  const [login, { loading: loginLoading }] = useMutation<LoginData, AuthVariables>(LOGIN_MUTATION, {
     onCompleted: (data) => {
       setToken(data.login.token);
       onLoginSuccess();
@@ -24,7 +39,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     },
   });
 
-  const [register, { loading: registerLoading }] = useMutation(REGISTER_MUTATION, {
+  const [register, { loading: registerLoading }] = useMutation<RegisterData, AuthVariables>(REGISTER_MUTATION, {
     onCompleted: (data) => {
       setToken(data.register.token);
       onLoginSuccess();
