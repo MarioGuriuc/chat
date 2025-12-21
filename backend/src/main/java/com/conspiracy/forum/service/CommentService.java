@@ -1,6 +1,9 @@
 package com.conspiracy.forum.service;
 
 import com.conspiracy.forum.dto.CommentInput;
+import com.conspiracy.forum.exception.ResourceNotFoundException;
+import com.conspiracy.forum.exception.UnauthorizedException;
+import com.conspiracy.forum.exception.ValidationException;
 import com.conspiracy.forum.model.Comment;
 import com.conspiracy.forum.model.Theory;
 import com.conspiracy.forum.model.User;
@@ -21,11 +24,11 @@ public class CommentService {
     @Transactional
     public Comment createComment(CommentInput input, User author) {
         if (input.getContent().length() < 3) {
-            throw new RuntimeException("Comment must be at least 3 characters");
+            throw new ValidationException("Comment must be at least 3 characters");
         }
         
         Theory theory = theoryRepository.findById(input.getTheoryId())
-            .orElseThrow(() -> new RuntimeException("Theory not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Theory not found"));
         
         Comment comment = new Comment();
         comment.setContent(input.getContent());
@@ -38,14 +41,14 @@ public class CommentService {
     @Transactional
     public Comment updateComment(Long id, String content, Long userId) {
         if (content.length() < 3) {
-            throw new RuntimeException("Comment must be at least 3 characters");
+            throw new ValidationException("Comment must be at least 3 characters");
         }
         
         Comment comment = commentRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Comment not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
             
         if (!comment.getAuthor().getId().equals(userId)) {
-            throw new RuntimeException("Unauthorized to update this comment");
+            throw new UnauthorizedException("Unauthorized to update this comment");
         }
         
         comment.setContent(content);
@@ -55,10 +58,10 @@ public class CommentService {
     @Transactional
     public boolean deleteComment(Long id, Long userId) {
         Comment comment = commentRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Comment not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
             
         if (!comment.getAuthor().getId().equals(userId)) {
-            throw new RuntimeException("Unauthorized to delete this comment");
+            throw new UnauthorizedException("Unauthorized to delete this comment");
         }
         
         commentRepository.delete(comment);

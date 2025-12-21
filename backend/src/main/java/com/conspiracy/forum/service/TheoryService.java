@@ -2,6 +2,9 @@ package com.conspiracy.forum.service;
 
 import com.conspiracy.forum.dto.TheoryInput;
 import com.conspiracy.forum.dto.TheoryPage;
+import com.conspiracy.forum.exception.ResourceNotFoundException;
+import com.conspiracy.forum.exception.UnauthorizedException;
+import com.conspiracy.forum.exception.ValidationException;
 import com.conspiracy.forum.model.Theory;
 import com.conspiracy.forum.model.TheoryStatus;
 import com.conspiracy.forum.model.User;
@@ -57,10 +60,10 @@ public class TheoryService {
     @Transactional
     public Theory createTheory(TheoryInput input, User author) {
         if (input.getTitle().length() < 5) {
-            throw new RuntimeException("Title must be at least 5 characters");
+            throw new ValidationException("Title must be at least 5 characters");
         }
         if (input.getContent().length() < 10) {
-            throw new RuntimeException("Content must be at least 10 characters");
+            throw new ValidationException("Content must be at least 10 characters");
         }
         
         Theory theory = new Theory();
@@ -76,17 +79,17 @@ public class TheoryService {
     @Transactional
     public Theory updateTheory(Long id, TheoryInput input, Long userId) {
         Theory theory = theoryRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Theory not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Theory not found"));
             
         if (!theory.getAuthor().getId().equals(userId)) {
-            throw new RuntimeException("Unauthorized to update this theory");
+            throw new UnauthorizedException("Unauthorized to update this theory");
         }
         
         if (input.getTitle().length() < 5) {
-            throw new RuntimeException("Title must be at least 5 characters");
+            throw new ValidationException("Title must be at least 5 characters");
         }
         if (input.getContent().length() < 10) {
-            throw new RuntimeException("Content must be at least 10 characters");
+            throw new ValidationException("Content must be at least 10 characters");
         }
         
         theory.setTitle(input.getTitle());
@@ -104,10 +107,10 @@ public class TheoryService {
     @Transactional
     public boolean deleteTheory(Long id, Long userId) {
         Theory theory = theoryRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Theory not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Theory not found"));
             
         if (!theory.getAuthor().getId().equals(userId)) {
-            throw new RuntimeException("Unauthorized to delete this theory");
+            throw new UnauthorizedException("Unauthorized to delete this theory");
         }
         
         theoryRepository.delete(theory);

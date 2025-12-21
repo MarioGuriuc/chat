@@ -1,6 +1,8 @@
 package com.conspiracy.forum.service;
 
 import com.conspiracy.forum.dto.AuthPayload;
+import com.conspiracy.forum.exception.UnauthorizedException;
+import com.conspiracy.forum.exception.ValidationException;
 import com.conspiracy.forum.model.User;
 import com.conspiracy.forum.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,23 +26,23 @@ public class UserService {
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             if (!passwordEncoder.matches(secretCode, user.getSecretCode())) {
-                throw new RuntimeException("Invalid username or secret code");
+                throw new UnauthorizedException("Invalid username or secret code");
             }
             String token = generateToken(user);
             return new AuthPayload(user, token);
         } else {
-            throw new RuntimeException("Invalid username or secret code");
+            throw new UnauthorizedException("Invalid username or secret code");
         }
     }
     
     @Transactional
     public AuthPayload register(String username, String secretCode, Boolean anonymous) {
         if (userRepository.existsByUsername(username)) {
-            throw new RuntimeException("Username already exists");
+            throw new ValidationException("Username already exists");
         }
         
         if (secretCode.length() < 6) {
-            throw new RuntimeException("Secret code must be at least 6 characters");
+            throw new ValidationException("Secret code must be at least 6 characters");
         }
         
         User user = new User();
