@@ -1,48 +1,54 @@
 package com.conspiracy.forum.service;
 
 import com.conspiracy.forum.dto.AuthPayload;
+import com.conspiracy.forum.exception.UnauthorizedException;
+import com.conspiracy.forum.exception.ValidationException;
 import com.conspiracy.forum.model.User;
 import com.conspiracy.forum.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private static final SecureRandom secureRandom = new SecureRandom();
     
     @Transactional
-    public AuthPayload login(String username, String secretCode, Boolean anonymous) {
+    public AuthPayload login(String username, String secretCode) {
         Optional<User> userOpt = userRepository.findByUsername(username);
         
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            if (!user.getSecretCode().equals(secretCode)) {
-                throw new RuntimeException("Invalid secret code");
+            if (!passwordEncoder.matches(secretCode, user.getSecretCode())) {
+                throw new UnauthorizedException("Invalid username or secret code");
             }
             String token = generateToken(user);
             return new AuthPayload(user, token);
         } else {
-            throw new RuntimeException("User not found");
+            throw new UnauthorizedException("Invalid username or secret code");
         }
     }
     
     @Transactional
     public AuthPayload register(String username, String secretCode, Boolean anonymous) {
         if (userRepository.existsByUsername(username)) {
-            throw new RuntimeException("Username already exists");
+            throw new ValidationException("Username already exists");
         }
         
         if (secretCode.length() < 6) {
-            throw new RuntimeException("Secret code must be at least 6 characters");
+            throw new ValidationException("Secret code must be at least 6 characters");
         }
         
         User user = new User();
         user.setUsername(username);
-        user.setSecretCode(secretCode);
+        user.setSecretCode(passwordEncoder.encode(secretCode));
         user.setIsAnonymous(anonymous != null ? anonymous : false);
         
         User savedUser = userRepository.save(user);
@@ -60,7 +66,10 @@ public class UserService {
     }
     
     private String generateToken(User user) {
-        return UUID.randomUUID().toString() + "-" + user.getId();
+        byte[] tokenBytes = new byte[32];
+        secureRandom.nextBytes(tokenBytes);
+        String randomToken = Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
+        return randomToken + "-" + user.getId();
     }
     
     public Long extractUserIdFromToken(String token) {

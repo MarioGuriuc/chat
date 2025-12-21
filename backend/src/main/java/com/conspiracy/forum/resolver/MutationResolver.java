@@ -3,6 +3,8 @@ package com.conspiracy.forum.resolver;
 import com.conspiracy.forum.dto.AuthPayload;
 import com.conspiracy.forum.dto.CommentInput;
 import com.conspiracy.forum.dto.TheoryInput;
+import com.conspiracy.forum.exception.ResourceNotFoundException;
+import com.conspiracy.forum.exception.UnauthorizedException;
 import com.conspiracy.forum.model.Comment;
 import com.conspiracy.forum.model.Theory;
 import com.conspiracy.forum.model.User;
@@ -25,10 +27,9 @@ public class MutationResolver {
     @MutationMapping
     public AuthPayload login(
         @Argument String username,
-        @Argument String secretCode,
-        @Argument Boolean anonymous
+        @Argument String secretCode
     ) {
-        return userService.login(username, secretCode, anonymous);
+        return userService.login(username, secretCode);
     }
     
     @MutationMapping
@@ -46,10 +47,10 @@ public class MutationResolver {
         @ContextValue("userId") Long userId
     ) {
         if (userId == null) {
-            throw new RuntimeException("Authentication required");
+            throw new UnauthorizedException("Authentication required");
         }
         User user = userService.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return theoryService.createTheory(input, user);
     }
     
@@ -60,7 +61,7 @@ public class MutationResolver {
         @ContextValue("userId") Long userId
     ) {
         if (userId == null) {
-            throw new RuntimeException("Authentication required");
+            throw new UnauthorizedException("Authentication required");
         }
         return theoryService.updateTheory(id, input, userId);
     }
@@ -71,7 +72,7 @@ public class MutationResolver {
         @ContextValue("userId") Long userId
     ) {
         if (userId == null) {
-            throw new RuntimeException("Authentication required");
+            throw new UnauthorizedException("Authentication required");
         }
         return theoryService.deleteTheory(id, userId);
     }
@@ -82,10 +83,10 @@ public class MutationResolver {
         @ContextValue("userId") Long userId
     ) {
         if (userId == null) {
-            throw new RuntimeException("Authentication required");
+            throw new UnauthorizedException("Authentication required");
         }
         User user = userService.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return commentService.createComment(input, user);
     }
     
@@ -96,7 +97,7 @@ public class MutationResolver {
         @ContextValue("userId") Long userId
     ) {
         if (userId == null) {
-            throw new RuntimeException("Authentication required");
+            throw new UnauthorizedException("Authentication required");
         }
         return commentService.updateComment(id, content, userId);
     }
@@ -107,7 +108,7 @@ public class MutationResolver {
         @ContextValue("userId") Long userId
     ) {
         if (userId == null) {
-            throw new RuntimeException("Authentication required");
+            throw new UnauthorizedException("Authentication required");
         }
         return commentService.deleteComment(id, userId);
     }

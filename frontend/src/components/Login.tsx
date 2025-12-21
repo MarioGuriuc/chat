@@ -66,7 +66,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     if (isRegister) {
       register({ variables: { username, secretCode, anonymous } });
     } else {
-      login({ variables: { username, secretCode, anonymous } });
+      login({ variables: { username, secretCode } });
     }
   };
 
