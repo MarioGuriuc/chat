@@ -116,18 +116,20 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
               />
             </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="anonymous"
-                checked={anonymous}
-                onChange={(e) => setAnonymous(e.target.checked)}
-                className="w-4 h-4"
-              />
-              <label htmlFor="anonymous" className="text-conspiracy-green text-sm">
-                🕵️ ANONYMOUS MODE
-              </label>
-            </div>
+            {isRegister && (
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="anonymous"
+                  checked={anonymous}
+                  onChange={(e) => setAnonymous(e.target.checked)}
+                  className="w-4 h-4"
+                />
+                <label htmlFor="anonymous" className="text-conspiracy-green text-sm">
+                  🕵️ ANONYMOUS MODE
+                </label>
+              </div>
+            )}
 
             <button
               type="submit"

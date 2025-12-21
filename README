@@ -119,7 +119,7 @@ The application features a mysterious, terminal-style interface with:
 - `me`: Get current authenticated user
 
 ### Mutations
-- `login(username, secretCode, anonymous)`: User login
+- `login(username, secretCode)`: User login
 - `register(username, secretCode, anonymous)`: User registration
 - `createTheory(input)`: Create new theory
 - `updateTheory(id, input)`: Update theory
@@ -130,8 +130,9 @@ The application features a mysterious, terminal-style interface with:
 
 ## 🔒 Security Notes
 
-- Secret codes are stored in the database (in production, use proper password hashing)
+- Secret codes are hashed using BCrypt and only the hashes are stored in the database (plaintext secret codes are never stored)
 - Authentication tokens are stored in localStorage
+- Tokens are securely generated and validated server-side using a token storage system
 - CORS is configured for local development
 
 ## 🛠️ Development

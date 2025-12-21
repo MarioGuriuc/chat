@@ -219,7 +219,7 @@ backend/
 - me: User
 
 **Mutations**:
-- login(username, secretCode, anonymous): AuthPayload
+- login(username, secretCode): AuthPayload
 - register(username, secretCode, anonymous): AuthPayload
 - createTheory(input): Theory
 - updateTheory(id, input): Theory

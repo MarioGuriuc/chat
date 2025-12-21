@@ -11,6 +11,7 @@ import com.conspiracy.forum.model.User;
 import com.conspiracy.forum.service.CommentService;
 import com.conspiracy.forum.service.TheoryService;
 import com.conspiracy.forum.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.ContextValue;
@@ -43,7 +44,7 @@ public class MutationResolver {
     
     @MutationMapping
     public Theory createTheory(
-        @Argument TheoryInput input,
+        @Argument @Valid TheoryInput input,
         @ContextValue("userId") Long userId
     ) {
         if (userId == null) {
@@ -57,7 +58,7 @@ public class MutationResolver {
     @MutationMapping
     public Theory updateTheory(
         @Argument Long id,
-        @Argument TheoryInput input,
+        @Argument @Valid TheoryInput input,
         @ContextValue("userId") Long userId
     ) {
         if (userId == null) {
@@ -79,7 +80,7 @@ public class MutationResolver {
     
     @MutationMapping
     public Comment createComment(
-        @Argument CommentInput input,
+        @Argument @Valid CommentInput input,
         @ContextValue("userId") Long userId
     ) {
         if (userId == null) {
