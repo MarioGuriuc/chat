@@ -17,7 +17,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder;
+    private static final SecureRandom secureRandom = new SecureRandom();
     
     @Transactional
     public AuthPayload login(String username, String secretCode) {
@@ -65,7 +66,6 @@ public class UserService {
     }
     
     private String generateToken(User user) {
-        SecureRandom secureRandom = new SecureRandom();
         byte[] tokenBytes = new byte[32];
         secureRandom.nextBytes(tokenBytes);
         String randomToken = Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
