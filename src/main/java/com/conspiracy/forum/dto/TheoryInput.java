@@ -17,5 +17,5 @@ public class TheoryInput {
     private String content;
     private TheoryStatus status;
     private List<String> evidenceUrls;
-    private boolean anonymousPost;
+    private Boolean anonymousPost;
 }

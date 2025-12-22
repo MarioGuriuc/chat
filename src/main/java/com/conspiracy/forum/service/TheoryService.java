@@ -85,7 +85,7 @@ public class TheoryService {
                 .content(input.getContent())
                 .status(input.getStatus() != null ? input.getStatus() : TheoryStatus.UNVERIFIED)
                 .evidenceUrls(input.getEvidenceUrls() != null ? input.getEvidenceUrls() : new ArrayList<>())
-                .isAnonymousPost(input.isAnonymousPost())
+                .isAnonymousPost(Boolean.TRUE.equals(input.getAnonymousPost()))
                 .author(author)
                 .build();
 

@@ -67,7 +67,7 @@ public class CommentService {
 
         Comment comment = Comment.builder()
                 .content(input.getContent())
-                .isAnonymousPost(input.isAnonymousPost())
+                .isAnonymousPost(Boolean.TRUE.equals(input.getAnonymousPost()))
                 .author(author)
                 .theory(theory)
                 .build();
