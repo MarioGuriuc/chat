@@ -48,8 +48,19 @@ public class TheoryService {
             return theoryRepository.findHotTheories(minComments, pageable);
         }
 
+        // Normalize empty keyword to null
+        String keyword = filter.getKeyword();
+        if (keyword != null && keyword.trim().isEmpty()) {
+            keyword = null;
+        }
+
+        // If no filters are provided, just return all
+        if (filter.getStatus() == null && keyword == null) {
+            return theoryRepository.findAll(pageable);
+        }
+
         // Filter by status and/or keyword
-        return theoryRepository.findByFilters(filter.getStatus(), filter.getKeyword(), pageable);
+        return theoryRepository.findByFilters(filter.getStatus(), keyword, pageable);
     }
 
     @Transactional(readOnly = true)
