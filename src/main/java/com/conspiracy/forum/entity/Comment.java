@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +28,7 @@ public class Comment {
     @Builder.Default
     private LocalDateTime postedAt = LocalDateTime.now();
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
