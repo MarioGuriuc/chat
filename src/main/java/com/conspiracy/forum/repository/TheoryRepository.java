@@ -20,8 +20,8 @@ public interface TheoryRepository extends JpaRepository<Theory, Long> {
     
     @Query("SELECT t FROM Theory t WHERE " +
            "(:status IS NULL OR t.status = :status) AND " +
-           "(:keyword IS NULL OR LOWER(t.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-           "LOWER(t.content) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+           "(:keyword IS NULL OR :keyword = '' OR LOWER(t.title) LIKE CONCAT('%', LOWER(:keyword), '%') OR " +
+           "LOWER(t.content) LIKE CONCAT('%', LOWER(:keyword), '%'))")
     Page<Theory> findByFilters(@Param("status") TheoryStatus status, 
                                @Param("keyword") String keyword, 
                                Pageable pageable);

@@ -1,4 +1,79 @@
-# Conspiracy Theory Forum - Backend API
+# Conspiracy Theory Forum
+
+A full-stack Conspiracy Theory Forum application with a GraphQL backend (Spring Boot) and a React frontend with Tailwind CSS.
+
+## Project Structure
+
+```
+├── src/                    # Backend (Spring Boot)
+│   ├── main/
+│   │   ├── java/          # Java source code
+│   │   └── resources/     # Configuration and GraphQL schema
+│   └── test/              # Backend tests
+├── frontend/              # Frontend (React + Vite + Tailwind)
+│   ├── src/
+│   │   ├── components/    # Reusable UI components
+│   │   ├── pages/         # Page components
+│   │   ├── graphql/       # GraphQL queries and mutations
+│   │   ├── context/       # React context providers
+│   │   └── types/         # TypeScript type definitions
+│   └── ...
+└── pom.xml                # Backend Maven configuration
+```
+
+---
+
+## Frontend
+
+A React-based frontend with a mysterious conspiracy theme, built with Vite, TypeScript, and Tailwind CSS.
+
+### Frontend Technology Stack
+
+- **React 19** with **TypeScript**
+- **Vite** for fast development and building
+- **Tailwind CSS** for styling
+- **Apollo Client 4** for GraphQL integration
+- **React Router** for navigation
+
+### Features
+
+- 🎭 **Anonymous Posting** - Toggle anonymous mode to hide your identity
+- 🔍 **Advanced Filtering** - Filter theories by status, keyword, or "hot" (most commented)
+- 📜 **Paginated Lists** - Browse theories with pagination
+- 💬 **Nested Comments** - View and add comments on theories
+- 🔐 **JWT Authentication** - Secure login/register with secret code Easter egg
+- 🎨 **Conspiracy Theme** - Dark, mysterious UI with glowing green accents
+
+### Running the Frontend
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+The frontend runs on `http://localhost:5173` and proxies GraphQL requests to the backend at `http://localhost:8080`.
+
+### Screenshots
+
+| Home Page | Login Page |
+|-----------|------------|
+| ![Home](https://github.com/user-attachments/assets/b62fa6b3-f280-469f-a6f2-b40b086413c6) | ![Login](https://github.com/user-attachments/assets/8b9d178f-ddb9-4a41-ae57-92c6ed7fa075) |
+
+| Filter Panel | Hot Theories |
+|--------------|--------------|
+| ![Filter](https://github.com/user-attachments/assets/49e9e09f-6a5b-43e5-a9fc-16675d61bd46) | ![Hot](https://github.com/user-attachments/assets/5c12b86a-a6a2-4747-bccf-94a0b1c22a16) |
+
+---
+
+## Backend API
 
 A GraphQL-based backend API for a Conspiracy Theory Forum built with Spring Boot.
 
