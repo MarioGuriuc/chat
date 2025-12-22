@@ -6,17 +6,15 @@ import com.conspiracy.forum.dto.TheoryInput;
 import com.conspiracy.forum.entity.Comment;
 import com.conspiracy.forum.entity.Theory;
 import com.conspiracy.forum.entity.User;
-import com.conspiracy.forum.exception.UnauthorizedException;
 import com.conspiracy.forum.service.CommentService;
 import com.conspiracy.forum.service.TheoryService;
+import com.conspiracy.forum.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -63,19 +61,19 @@ public class TheoryResolver {
 
     @MutationMapping
     public Theory createTheory(@Argument TheoryInput input) {
-        String username = getAuthenticatedUsername();
+        String username = SecurityUtils.getAuthenticatedUsername();
         return theoryService.createTheory(input, username);
     }
 
     @MutationMapping
     public Theory updateTheory(@Argument Long id, @Argument TheoryInput input) {
-        String username = getAuthenticatedUsername();
+        String username = SecurityUtils.getAuthenticatedUsername();
         return theoryService.updateTheory(id, input, username);
     }
 
     @MutationMapping
     public boolean deleteTheory(@Argument Long id) {
-        String username = getAuthenticatedUsername();
+        String username = SecurityUtils.getAuthenticatedUsername();
         return theoryService.deleteTheory(id, username);
     }
 
@@ -99,15 +97,6 @@ public class TheoryResolver {
             return "Anonymous Truth Seeker";
         }
         return theory.getAuthor().getUsername();
-    }
-
-    private String getAuthenticatedUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || 
-            "anonymousUser".equals(authentication.getPrincipal())) {
-            throw new UnauthorizedException("You must be logged in to perform this action");
-        }
-        return authentication.getName();
     }
 
     public record TheoriesPage(

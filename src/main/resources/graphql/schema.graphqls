@@ -52,7 +52,7 @@ type User {
     id: ID!
     username: String!
     email: String!
-    isAnonymous: Boolean!
+    anonymousMode: Boolean!
     createdAt: String!
     theories: [Theory!]
     comments: [Comment!]

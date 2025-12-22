@@ -2,6 +2,8 @@ package com.conspiracy.forum.entity;
 
 import com.conspiracy.forum.enums.UserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,12 +30,16 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @NotBlank
     private String username;
 
     @Column(nullable = false)
+    @NotBlank
     private String password;
 
     @Column(unique = true, nullable = false)
+    @NotBlank
+    @Email
     private String email;
 
     @Column(name = "secret_code")
@@ -46,7 +52,7 @@ public class User implements UserDetails {
 
     @Column(name = "is_anonymous")
     @Builder.Default
-    private boolean isAnonymous = false;
+    private boolean anonymousMode = false;
 
     @Column(name = "created_at")
     @Builder.Default
@@ -59,6 +65,16 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -88,8 +88,17 @@ mvn spring-boot:run
 mvn test
 ```
 
-### GraphiQL Interface
+### GraphiQL Interface (Interactive API Testing)
 When running, access the GraphQL playground at: `http://localhost:8080/graphiql`
+
+GraphiQL provides:
+- **Interactive query builder** - Write and execute GraphQL queries/mutations
+- **Auto-completion** - Schema-aware suggestions as you type
+- **Documentation explorer** - Browse available queries, mutations, and types
+- **Query history** - Access previously executed queries
+- **Response viewer** - See formatted JSON responses
+
+**Note:** For GraphQL APIs, GraphiQL serves as the equivalent of Swagger for REST APIs. It provides full interactive documentation and testing capabilities.
 
 ## API Usage Examples
 

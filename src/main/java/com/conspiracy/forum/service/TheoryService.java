@@ -11,11 +11,10 @@ import com.conspiracy.forum.exception.UnauthorizedException;
 import com.conspiracy.forum.exception.ValidationException;
 import com.conspiracy.forum.repository.TheoryRepository;
 import com.conspiracy.forum.repository.UserRepository;
+import com.conspiracy.forum.util.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +35,7 @@ public class TheoryService {
 
     @Transactional(readOnly = true)
     public Page<Theory> getTheories(TheoryFilter filter, PageInput pageInput) {
-        Pageable pageable = createPageable(pageInput);
+        Pageable pageable = PaginationUtils.createPageable(pageInput);
 
         if (filter == null) {
             return theoryRepository.findAll(pageable);
@@ -69,7 +68,7 @@ public class TheoryService {
 
     @Transactional(readOnly = true)
     public Page<Theory> getHotTheories(PageInput pageInput) {
-        Pageable pageable = createPageable(pageInput);
+        Pageable pageable = PaginationUtils.createPageable(pageInput);
         return theoryRepository.findAllOrderByCommentCountDesc(pageable);
     }
 
@@ -148,11 +147,5 @@ public class TheoryService {
         if (input.getContent() == null || input.getContent().length() < MIN_CONTENT_LENGTH) {
             throw new ValidationException("Theory content must be at least " + MIN_CONTENT_LENGTH + " characters");
         }
-    }
-
-    private Pageable createPageable(PageInput pageInput) {
-        int page = (pageInput != null && pageInput.getPage() > 0) ? pageInput.getPage() - 1 : 0;
-        int size = (pageInput != null && pageInput.getSize() > 0) ? pageInput.getSize() : 10;
-        return PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "postedAt"));
     }
 }

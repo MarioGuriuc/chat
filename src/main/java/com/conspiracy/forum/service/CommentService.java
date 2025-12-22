@@ -11,11 +11,10 @@ import com.conspiracy.forum.exception.ValidationException;
 import com.conspiracy.forum.repository.CommentRepository;
 import com.conspiracy.forum.repository.TheoryRepository;
 import com.conspiracy.forum.repository.UserRepository;
+import com.conspiracy.forum.util.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +44,7 @@ public class CommentService {
         if (!theoryRepository.existsById(theoryId)) {
             throw new ResourceNotFoundException("Theory not found with id: " + theoryId);
         }
-        Pageable pageable = createPageable(pageInput);
+        Pageable pageable = PaginationUtils.createPageable(pageInput);
         return commentRepository.findByTheoryId(theoryId, pageable);
     }
 
@@ -125,11 +124,5 @@ public class CommentService {
         if (input.getTheoryId() == null) {
             throw new ValidationException("Theory ID is required");
         }
-    }
-
-    private Pageable createPageable(PageInput pageInput) {
-        int page = (pageInput != null && pageInput.getPage() > 0) ? pageInput.getPage() - 1 : 0;
-        int size = (pageInput != null && pageInput.getSize() > 0) ? pageInput.getSize() : 10;
-        return PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "postedAt"));
     }
 }

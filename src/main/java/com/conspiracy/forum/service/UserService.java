@@ -33,9 +33,9 @@ public class UserService {
     }
 
     @Transactional
-    public User updateAnonymousSetting(String username, boolean isAnonymous) {
+    public User updateAnonymousSetting(String username, boolean anonymousMode) {
         User user = getUserByUsername(username);
-        user.setAnonymous(isAnonymous);
+        user.setAnonymousMode(anonymousMode);
         return userRepository.save(user);
     }
 }

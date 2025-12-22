@@ -5,16 +5,13 @@ import com.conspiracy.forum.dto.PageInput;
 import com.conspiracy.forum.entity.Comment;
 import com.conspiracy.forum.entity.Theory;
 import com.conspiracy.forum.entity.User;
-import com.conspiracy.forum.exception.UnauthorizedException;
 import com.conspiracy.forum.service.CommentService;
+import com.conspiracy.forum.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -40,19 +37,19 @@ public class CommentResolver {
 
     @MutationMapping
     public Comment createComment(@Argument CommentInput input) {
-        String username = getAuthenticatedUsername();
+        String username = SecurityUtils.getAuthenticatedUsername();
         return commentService.createComment(input, username);
     }
 
     @MutationMapping
     public Comment updateComment(@Argument Long id, @Argument String content) {
-        String username = getAuthenticatedUsername();
+        String username = SecurityUtils.getAuthenticatedUsername();
         return commentService.updateComment(id, content, username);
     }
 
     @MutationMapping
     public boolean deleteComment(@Argument Long id) {
-        String username = getAuthenticatedUsername();
+        String username = SecurityUtils.getAuthenticatedUsername();
         return commentService.deleteComment(id, username);
     }
 
@@ -75,14 +72,5 @@ public class CommentResolver {
     @SchemaMapping(typeName = "Comment", field = "theory")
     public Theory getTheory(Comment comment) {
         return comment.getTheory();
-    }
-
-    private String getAuthenticatedUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() ||
-            "anonymousUser".equals(authentication.getPrincipal())) {
-            throw new UnauthorizedException("You must be logged in to perform this action");
-        }
-        return authentication.getName();
     }
 }
