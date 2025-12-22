@@ -19,5 +19,11 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // Allow setState in effects for syncing external data (common pattern with Apollo)
+      'react-hooks/set-state-in-effect': 'off',
+      // Allow exporting hooks and contexts from same file (practical for small apps)
+      'react-refresh/only-export-components': ['warn', { allowExportNames: ['useAuth'] }],
+    },
   },
 ])

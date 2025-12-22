@@ -23,6 +23,7 @@ export default function CreateTheoryPage() {
   const [evidenceUrls, setEvidenceUrls] = useState<string[]>(['']);
   const [anonymousPost, setAnonymousPost] = useState(user?.anonymousMode || false);
   const [error, setError] = useState('');
+  const [formInitialized, setFormInitialized] = useState(false);
 
   // Fetch existing theory for editing
   const { data: theoryData, loading: theoryLoading } = useQuery<{ theory: Theory }>(
@@ -33,17 +34,18 @@ export default function CreateTheoryPage() {
     }
   );
 
-  // Populate form when editing
+  // Populate form when editing - this is an intentional sync from external data
   useEffect(() => {
-    if (theoryData?.theory) {
+    if (theoryData?.theory && !formInitialized) {
       const theory = theoryData.theory;
       setTitle(theory.title);
       setContent(theory.content);
       setStatus(theory.status);
       setEvidenceUrls(theory.evidenceUrls.length > 0 ? theory.evidenceUrls : ['']);
       setAnonymousPost(theory.isAnonymousPost);
+      setFormInitialized(true);
     }
-  }, [theoryData]);
+  }, [theoryData, formInitialized]);
 
   const [createTheory, { loading: creating }] = useMutation<{ createTheory: Theory }>(CREATE_THEORY, {
     refetchQueries: [{ query: GET_THEORIES_PAGINATED }],
