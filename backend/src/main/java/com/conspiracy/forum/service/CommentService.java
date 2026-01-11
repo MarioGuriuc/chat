@@ -40,6 +40,22 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
+    public List<Comment> getRootCommentsByTheory(Long theoryId) {
+        if (!theoryRepository.existsById(theoryId)) {
+            throw new ResourceNotFoundException("Theory not found with id: " + theoryId);
+        }
+        return commentRepository.findByTheoryIdAndParentIsNullOrderByPostedAtDesc(theoryId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Comment> getReplies(Long parentId) {
+        if (!commentRepository.existsById(parentId)) {
+            throw new ResourceNotFoundException("Parent comment not found with id: " + parentId);
+        }
+        return commentRepository.findByParentIdOrderByPostedAtAsc(parentId);
+    }
+
+    @Transactional(readOnly = true)
     public Page<Comment> getCommentsByTheoryPaginated(Long theoryId, PageInput pageInput) {
         if (!theoryRepository.existsById(theoryId)) {
             throw new ResourceNotFoundException("Theory not found with id: " + theoryId);
@@ -64,16 +80,25 @@ public class CommentService {
         Theory theory = theoryRepository.findById(input.getTheoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Theory not found with id: " + input.getTheoryId()));
 
+        Comment parent = null;
+        if (input.getParentId() != null) {
+            parent = commentRepository.findById(input.getParentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent comment not found with id: " + input.getParentId()));
+            if (!parent.getTheory().getId().equals(theory.getId())) {
+                throw new ValidationException("Parent comment must belong to the same theory");
+            }
+        }
+
         Comment comment = Comment.builder()
                 .content(input.getContent())
                 .isAnonymousPost(Boolean.TRUE.equals(input.getAnonymousPost()))
                 .author(author)
                 .theory(theory)
+                .parent(parent)
                 .build();
 
         Comment savedComment = commentRepository.save(comment);
         
-        // Update theory comment count
         theory.incrementCommentCount();
         theoryRepository.save(theory);
 
@@ -88,7 +113,6 @@ public class CommentService {
 
         Comment comment = getCommentById(id);
 
-        // Check ownership
         if (!comment.getAuthor().getUsername().equals(username)) {
             throw new UnauthorizedException("You can only update your own comments");
         }
@@ -103,12 +127,10 @@ public class CommentService {
     public boolean deleteComment(Long id, String username) {
         Comment comment = getCommentById(id);
 
-        // Check ownership
         if (!comment.getAuthor().getUsername().equals(username)) {
             throw new UnauthorizedException("You can only delete your own comments");
         }
 
-        // Update theory comment count
         Theory theory = comment.getTheory();
         theory.decrementCommentCount();
         theoryRepository.save(theory);

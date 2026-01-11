@@ -28,19 +28,16 @@ public class AuthService {
     private String validSecretCode;
 
     public AuthResponse register(RegisterRequest request) {
-        // Validate secret code if provided
         if (request.getSecretCode() != null && !request.getSecretCode().isEmpty()) {
             if (!validSecretCode.equals(request.getSecretCode())) {
                 throw new AuthenticationException("Invalid secret code. The truth remains hidden.");
             }
         }
 
-        // Validate username
         if (request.getUsername() == null || request.getUsername().length() < 3) {
             throw new ValidationException("Username must be at least 3 characters long");
         }
 
-        // Check if username or email already exists
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new ValidationException("Username already exists");
         }
@@ -48,7 +45,6 @@ public class AuthService {
             throw new ValidationException("Email already exists");
         }
 
-        // Validate password
         if (request.getPassword() == null || request.getPassword().length() < 6) {
             throw new ValidationException("Password must be at least 6 characters long");
         }
@@ -72,7 +68,6 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest request) {
-        // Optional secret code validation for enhanced security
         if (request.getSecretCode() != null && !request.getSecretCode().isEmpty()) {
             if (!validSecretCode.equals(request.getSecretCode())) {
                 throw new AuthenticationException("Invalid secret code. Access denied.");

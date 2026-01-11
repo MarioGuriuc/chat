@@ -32,6 +32,7 @@ input TheoryInput {
 input CommentInput {
     content: String!
     theoryId: ID!
+    parentId: ID
     anonymousPost: Boolean
 }
 
@@ -85,6 +86,8 @@ type Comment {
     author: User
     authorName: String!
     theory: Theory!
+    parent: Comment
+    replies: [Comment!]!
 }
 
 type AuthResponse {
@@ -114,6 +117,7 @@ type Query {
     
     # Comment queries
     commentsByTheory(theoryId: ID!, page: PageInput): [Comment!]!
+    rootCommentsByTheory(theoryId: ID!): [Comment!]!
     comment(id: ID!): Comment
     
     # User queries

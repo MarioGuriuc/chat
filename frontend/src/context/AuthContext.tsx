@@ -40,7 +40,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     skip: !token,
   });
 
-  // Derive user from query data or local state
   const user = useMemo(() => {
     if (meError) {
       return null;
@@ -88,11 +87,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user, setAnonymousModeMutation]);
 
-  // Handle auth errors by clearing token
   const effectiveToken = meError ? null : token;
   if (meError && token) {
     localStorage.removeItem('token');
-    // Schedule token clear for next render to avoid setState during render
     setTimeout(() => setToken(null), 0);
   }
 

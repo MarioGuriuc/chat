@@ -1,6 +1,5 @@
 import { gql } from '@apollo/client';
 
-// Fragments
 export const THEORY_FRAGMENT = gql`
   fragment TheoryFields on Theory {
     id
@@ -26,10 +25,29 @@ export const COMMENT_FRAGMENT = gql`
     isAnonymousPost
     score
     authorName
+    author {
+      id
+      reputation
+    }
   }
 `;
 
-// Queries
+export const COMMENT_WITH_REPLIES_FRAGMENT = gql`
+  fragment CommentWithReplies on Comment {
+    ...CommentFields
+    replies {
+      ...CommentFields
+      replies {
+        ...CommentFields
+        replies {
+          ...CommentFields
+        }
+      }
+    }
+  }
+  ${COMMENT_FRAGMENT}
+`;
+
 export const GET_THEORIES = gql`
   query GetTheories($filter: TheoryFilter, $page: PageInput) {
     theories(filter: $filter, page: $page) {
@@ -59,13 +77,17 @@ export const GET_THEORY = gql`
   query GetTheory($id: ID!) {
     theory(id: $id) {
       ...TheoryFields
-      comments {
-        ...CommentFields
+      author {
+        id
+        reputation
       }
+    }
+    rootCommentsByTheory(theoryId: $id) {
+      ...CommentWithReplies
     }
   }
   ${THEORY_FRAGMENT}
-  ${COMMENT_FRAGMENT}
+  ${COMMENT_WITH_REPLIES_FRAGMENT}
 `;
 
 export const GET_THEORIES_BY_USER = gql`
@@ -99,7 +121,6 @@ export const GET_ME = gql`
   }
 `;
 
-// Mutations
 export const REGISTER_USER = gql`
   mutation Register($input: RegisterRequest!) {
     register(input: $input) {
@@ -179,7 +200,6 @@ export const DELETE_COMMENT = gql`
   }
 `;
 
-// Vote Mutations
 export const VOTE_THEORY = gql`
   mutation VoteTheory($id: ID!, $value: Int!) {
     voteTheory(id: $id, value: $value) {
