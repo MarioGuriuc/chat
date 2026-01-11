@@ -30,6 +30,7 @@ public class CommentService {
     private final UserRepository userRepository;
 
     private static final int MIN_CONTENT_LENGTH = 10;
+    private static final int MAX_COMMENT_DEPTH = 4;
 
     @Transactional(readOnly = true)
     public List<Comment> getCommentsByTheory(Long theoryId) {
@@ -86,6 +87,10 @@ public class CommentService {
                     .orElseThrow(() -> new ResourceNotFoundException("Parent comment not found with id: " + input.getParentId()));
             if (!parent.getTheory().getId().equals(theory.getId())) {
                 throw new ValidationException("Parent comment must belong to the same theory");
+            }
+            int depth = getCommentDepth(parent);
+            if (depth >= MAX_COMMENT_DEPTH) {
+                throw new ValidationException("Maximum comment nesting depth reached");
             }
         }
 
@@ -146,5 +151,15 @@ public class CommentService {
         if (input.getTheoryId() == null) {
             throw new ValidationException("Theory ID is required");
         }
+    }
+
+    private int getCommentDepth(Comment comment) {
+        int depth = 0;
+        Comment current = comment;
+        while (current.getParent() != null) {
+            depth++;
+            current = current.getParent();
+        }
+        return depth;
     }
 }
