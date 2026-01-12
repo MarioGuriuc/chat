@@ -1,5 +1,6 @@
 package com.conspiracy.forum.service;
 
+import com.conspiracy.forum.exception.EmailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +36,7 @@ public class EmailService {
             log.info("Temporary password email sent to: {}", toEmail);
         } catch (Exception e) {
             log.error("Failed to send email to {}: {}", toEmail, e.getMessage());
-            throw new RuntimeException("Failed to send email. Please try again later.");
+            throw new EmailException("Failed to send email. Please try again later.", e);
         }
     }
 }

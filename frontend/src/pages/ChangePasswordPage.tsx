@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client/react';
 import { CHANGE_PASSWORD } from '../graphql/operations';
@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function ChangePasswordPage() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, clearMustChangePassword } = useAuth();
   
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -16,10 +16,11 @@ export default function ChangePasswordPage() {
 
   const [changePassword, { loading }] = useMutation(CHANGE_PASSWORD);
 
-  if (!isAuthenticated) {
-    navigate('/login');
-    return null;
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,8 +51,8 @@ export default function ChangePasswordPage() {
       setNewPassword('');
       setConfirmPassword('');
       
-      // Clear mustChangePassword flag from localStorage if it was set
-      localStorage.removeItem('mustChangePassword');
+      // Clear mustChangePassword flag using context method
+      clearMustChangePassword();
       
       // Redirect after success
       setTimeout(() => {
@@ -61,6 +62,10 @@ export default function ChangePasswordPage() {
       setError(err instanceof Error ? err.message : 'Failed to change password. Please try again.');
     }
   };
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="max-w-md mx-auto animate-fade-in">
