@@ -79,7 +79,6 @@ class AuthServiceTest {
 
     @Test
     void login_ShouldReturnToken_WhenValidCredentials() {
-        // First register
         RegisterRequest registerRequest = RegisterRequest.builder()
                 .username("testuser")
                 .email("test@example.com")
@@ -87,7 +86,6 @@ class AuthServiceTest {
                 .build();
         authService.register(registerRequest);
 
-        // Then login
         LoginRequest loginRequest = LoginRequest.builder()
                 .username("testuser")
                 .password("password123")

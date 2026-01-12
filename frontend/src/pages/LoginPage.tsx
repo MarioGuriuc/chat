@@ -13,7 +13,6 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Redirect if already authenticated
   if (isAuthenticated) {
     navigate('/');
     return null;
