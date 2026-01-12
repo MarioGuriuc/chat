@@ -92,7 +92,9 @@ class JwtServiceTest {
             // This is a timing-dependent test, so we accept either outcome
         } catch (Exception e) {
             // Expected - ExpiredJwtException is thrown when parsing expired token
-            assertTrue(e.getMessage().contains("expired") || e instanceof io.jsonwebtoken.ExpiredJwtException);
+            // Check instanceof first to avoid potential NPE on getMessage()
+            assertTrue(e instanceof io.jsonwebtoken.ExpiredJwtException || 
+                    (e.getMessage() != null && e.getMessage().contains("expired")));
         }
     }
 
