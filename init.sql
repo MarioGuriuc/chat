@@ -14,7 +14,8 @@ CREATE TABLE users (
     role VARCHAR(50) NOT NULL,
     is_anonymous BOOLEAN DEFAULT FALSE,
     reputation INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    must_change_password BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE theories (
