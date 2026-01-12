@@ -50,6 +50,7 @@ export interface AuthResponse {
   username: string;
   userId: string;
   message: string;
+  mustChangePassword: boolean;
 }
 
 export interface TheoriesPage {
@@ -84,6 +85,15 @@ export interface LoginRequest {
   username: string;
   password: string;
   secretCode?: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
 }
 
 export interface TheoryInput {

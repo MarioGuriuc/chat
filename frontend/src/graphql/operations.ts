@@ -128,6 +128,7 @@ export const REGISTER_USER = gql`
       username
       userId
       message
+      mustChangePassword
     }
   }
 `;
@@ -139,7 +140,20 @@ export const LOGIN_USER = gql`
       username
       userId
       message
+      mustChangePassword
     }
+  }
+`;
+
+export const CHANGE_PASSWORD = gql`
+  mutation ChangePassword($input: ChangePasswordRequest!) {
+    changePassword(input: $input)
+  }
+`;
+
+export const FORGOT_PASSWORD = gql`
+  mutation ForgotPassword($input: ForgotPasswordRequest!) {
+    forgotPassword(input: $input)
   }
 `;
 

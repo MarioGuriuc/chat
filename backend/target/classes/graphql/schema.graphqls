@@ -21,6 +21,15 @@ input LoginRequest {
     secretCode: String
 }
 
+input ChangePasswordRequest {
+    currentPassword: String!
+    newPassword: String!
+}
+
+input ForgotPasswordRequest {
+    email: String!
+}
+
 input TheoryInput {
     title: String!
     content: String!
@@ -95,6 +104,7 @@ type AuthResponse {
     username: String!
     userId: ID!
     message: String!
+    mustChangePassword: Boolean!
 }
 
 type TheoriesPage {
@@ -130,6 +140,8 @@ type Mutation {
     # Authentication
     register(input: RegisterRequest!): AuthResponse!
     login(input: LoginRequest!): AuthResponse!
+    changePassword(input: ChangePasswordRequest!): Boolean!
+    forgotPassword(input: ForgotPasswordRequest!): Boolean!
     
     # Theory mutations
     createTheory(input: TheoryInput!): Theory!
